@@ -8,6 +8,11 @@ import matplotlib.pyplot as plt
 
 from tree_importer import tree_importer
 import gc
+from matplotlib.backends.backend_pdf import PdfPages
+from quality_cuts import quality_cuts
+import matplotlib as mpl
+
+
 
 """
  All the nonesences ( $\chi$2 < 0), inf and nan were deleted. Also applied
@@ -33,58 +38,13 @@ df_original.columns = new_labels
 
 
 sgnal = df_original[df_original['issignal']==1]
-
-
 bg = df_original[df_original['issignal']==0]
 
 
-with pd.option_context('mode.use_inf_as_na', True):
-    sgnal = sgnal.dropna()
+signal = quality_cuts(sgnal)
+background = quality_cuts(bg)
 
-
-with pd.option_context('mode.use_inf_as_na', True):
-    bg = bg.dropna()
-
-
-bg = bg.dropna()
-sgnal = sgnal.dropna()
-
-
-sgn1 = sgnal[(sgnal['chi2geo'] > 0) & (sgnal['chi2primpos'] > 0) & (sgnal['chi2primneg'] > 0) &
-       (sgnal['chi2topo'] > 0)]
-
-bgr1 = bg[(bg['chi2geo'] > 0) & (bg['chi2primpos'] > 0) & (bg['chi2primneg'] > 0) & (bg['chi2topo'] > 0)]
-
-del sgnal
-del bg
-
-
-sgn2 = sgn1[ (sgn1['mass'] > 1.077) &  (sgn1['distance'] > 0) &  (sgn1['distance'] < 100) ]
-
-bgr2 = bgr1[(bgr1['mass'] > 1.077) & (bgr1['distance'] > 0) & (bgr1['distance'] < 100) ]
-
-del sgn1
-del bgr1
-
-
-sgn3 = sgn2[(sgn2['z'] > 0 ) & (sgn2['l'] > 0 )  & (sgn2['ldl'] > 0 ) & (sgn2['cosinepos'] > 0 ) &
-           (sgn2['cosineneg'] > 0 ) & (sgn2['z'] < 80 )]
-
-bgr3 = bgr2[(bgr2['z'] > 0) & (bgr2['l'] > 0 )  & (bgr2['ldl'] > 0 ) & (bgr2['cosinepos'] > 0 ) &
-           (bgr2['cosineneg'] > 0 ) & (bgr2['z'] < 80)]
-
-del sgn2
-del bgr2
-
-
-sgn4 = sgn3[ (abs(sgn3['x']) < 50) & (abs(sgn3['y']) < 50) &  (sgn3['pz'] > 0)  & (abs(sgn3['l']) < 80) ]
-
-bgr4 = bgr3[ (abs(bgr3['x']) < 50) & (abs(bgr3['y']) < 50) &  (bgr3['pz'] > 0) & (abs(bgr3['l']) < 80)]
-
-
-del sgn3
-del bgr3
-
+mpl.rc('figure', max_open_warning = 0)
 
 def hist_variables(df_s, df_b, feature, pdf_key):
 
@@ -123,8 +83,8 @@ log_x = ['chi2geo', 'chi2primneg', 'chi2primpos', 'chi2topo', 'distance', 'z']
 new_log_x = []
 
 for feat in log_x:
-    sgn4[feat+'_log'] = np.log(sgn4[feat])
-    bgr4[feat+'_log'] = np.log(bgr4[feat])
+    signal[feat+'_log'] = np.log(signal[feat])
+    background[feat+'_log'] = np.log(background[feat])
 
     new_log_x.append(feat+'_log')
 
@@ -132,12 +92,10 @@ for feat in log_x:
 features = non_log_x + new_log_x
 
 
-from matplotlib.backends.backend_pdf import PdfPages
-
 
 
 pdf_cuts = PdfPages('dist_cuts.pdf')
 for feat in features:
-    hist_variables(sgn4, bgr4, feat, pdf_cuts)
+    hist_variables(signal, background, feat, pdf_cuts)
 
 pdf_cuts.close()
