@@ -16,19 +16,11 @@ import gc
 
 """
 
-from concurrent.futures import ThreadPoolExecutor
-executor = ThreadPoolExecutor(8)
 
-
-
-file = tree_importer('/home/olha/CBM/dataset/10k_events_PFSimplePlainTree.root',
+df_original = tree_importer('/home/olha/CBM/dataset/10k_events_PFSimplePlainTree.root',
                      'PlainTree')
 
 gc.collect()
-
-
-df_original= pd.DataFrame(data=file)
-del file
 
 
 new_labels= ['chi2geo', 'chi2primneg', 'chi2primpos', 'chi2topo', 'cosineneg',
