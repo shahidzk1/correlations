@@ -6,7 +6,8 @@ import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 
-import uproot
+from tree_importer import tree_importer
+import gc
 
 """
  All the nonesences ( $\chi$2 < 0), inf and nan were deleted. Also applied
@@ -16,15 +17,13 @@ import uproot
 """
 
 from concurrent.futures import ThreadPoolExecutor
-executor = ThreadPoolExecutor(4)
+executor = ThreadPoolExecutor(8)
 
 
 
-file = uproot.open('10k_events_PFSimplePlainTree.root:PlainTree', library='pd', decompression_executor=executor,
-                                  interpretation_executor=executor).arrays(library='np',decompression_executor=executor,
-                                  interpretation_executor=executor)
+file = tree_importer('/home/olha/CBM/dataset/10k_events_PFSimplePlainTree.root',
+                     'PlainTree')
 
-import gc
 gc.collect()
 
 
