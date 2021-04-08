@@ -13,15 +13,7 @@ from quality_cuts import quality_cuts
 import matplotlib as mpl
 
 
-
-"""
- All the nonesences ( $\chi$2 < 0), inf and nan were deleted. Also applied
- quality cuts based on detector geometry. Full description could be found in
- https://docs.google.com/document/d/11f0ZKPW8ftTVhTxeWiog1g6qdsGgN1mlIE3vd5FHLbc/edit?usp=sharing
-
-"""
-
-
+# import data using tree_importer module
 df_original = tree_importer('/home/olha/CBM/dataset/10k_events_PFSimplePlainTree.root',
                      'PlainTree')
 
@@ -47,6 +39,25 @@ background = quality_cuts(bg)
 mpl.rc('figure', max_open_warning = 0)
 
 def hist_variables(df_s, df_b, feature, pdf_key):
+    """
+
+    Applied quality cuts and created distributions for all the features in pdf
+    file
+
+    Parameters
+
+    ----------
+
+    df_s: dataframe
+          signal
+    df_b: dataframe
+          background
+    feature: str
+            name of the feature to be plotted
+    pdf_key: PdfPages object
+            name of pdf document with distributions
+
+    """
 
     fig, ax = plt.subplots(figsize=(20, 10))
 
@@ -82,6 +93,7 @@ log_x = ['chi2geo', 'chi2primneg', 'chi2primpos', 'chi2topo', 'distance', 'z']
 
 new_log_x = []
 
+# converting some features to logarithm scale
 for feat in log_x:
     signal[feat+'_log'] = np.log(signal[feat])
     background[feat+'_log'] = np.log(background[feat])

@@ -1,4 +1,18 @@
 def tree_importer(path,treename):
+
+    """
+    Import of root file by using uproot
+
+    Parameters
+
+    ----------
+
+    path: str
+          path to root file
+    treename: str
+           name of the tree to be analyzed
+    """
+
     import uproot
     from concurrent.futures import ThreadPoolExecutor
     import pandas as pd
