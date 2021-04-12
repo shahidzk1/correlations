@@ -3,8 +3,8 @@ import pandas as pd
 def quality_cuts(df):
 
     """
-     All the nonesences ( $\chi$2 < 0), inf and nan were deleted. Also applied
-     quality cuts based on detector geometry. Full description could be found in
+     This function removes numerical artifacts ( $\chi$2 < 0), inf and nan values from a data-frame object which includes proton and pion pairs for lambda
+     reconstruction. It also applies quality cuts based on detector geometry. Full description could be found in
      https://docs.google.com/document/d/11f0ZKPW8ftTVhTxeWiog1g6qdsGgN1mlIE3vd5FHLbc/edit?usp=sharing
 
      Parameters
